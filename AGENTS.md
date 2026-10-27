@@ -1,5 +1,7 @@
 # AGENTS.md — 所有 Agent 的统一规矩
 
+0. **开工前先读 `START_HERE.md` 并跑 `python3 tools/doctor.py`**，体检有 FAIL 不要开工。
+
 1. **只改你任务范围内的文件。** 状态变化只改对应 `topics/*.md` 的 frontmatter，不要手改 `index/`（那是生成的）。
 2. **每次推进状态必须走合法流转**：idea → researching → drafting → imaged → video → published，用 `tools/set_status.py` 改，它会校验并写 `updated` 和 `history`。
 3. **正文写 Markdown，元数据写 frontmatter。** 必填：id / title / status / type / created / updated / owner_agent。

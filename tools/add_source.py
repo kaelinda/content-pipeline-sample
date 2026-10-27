@@ -13,17 +13,24 @@ a = ap.parse_args()
 topic_path = os.path.join(root, "topics", f"{a.topic}.md")
 if not os.path.exists(topic_path): sys.exit(f"选题不存在 {topic_path}")
 existing = sorted(glob.glob(os.path.join(root, "sources", f"{a.topic}-s*.md")))
-n = len(existing) + 1
-sid = f"{a.topic}-s{n:02d}"
+import re as _re
+nums = [int(m.group(1)) for f in existing if (m := _re.search(r"-s(\d+)\.md$", f))]
+n = (max(nums) + 1) if nums else 1
 today = datetime.date.today().isoformat()
 tpl = open(os.path.join(root, "templates/source.md"), encoding="utf-8").read()
-content = (tpl.replace("{{id}}", sid).replace("{{topic_id}}", a.topic).replace("{{title}}", a.title)
-           .replace("{{url}}", a.url).replace("{{source_type}}", a.stype)
-           .replace("{{publisher}}", a.publisher).replace("{{date}}", today).replace("{{by}}", a.by))
-if a.reliability != "secondary":
-    content = content.replace("reliability: secondary", f"reliability: {a.reliability}")
-path = os.path.join(root, "sources", f"{sid}.md")
-open(path, "w", encoding="utf-8").write(content)
+while True:
+    sid = f"{a.topic}-s{n:02d}"
+    content = (tpl.replace("{{id}}", sid).replace("{{topic_id}}", a.topic).replace("{{title}}", a.title)
+               .replace("{{url}}", a.url).replace("{{source_type}}", a.stype)
+               .replace("{{publisher}}", a.publisher).replace("{{date}}", today).replace("{{by}}", a.by))
+    if a.reliability != "secondary":
+        content = content.replace("reliability: secondary", f"reliability: {a.reliability}")
+    path = os.path.join(root, "sources", f"{sid}.md")
+    try:
+        with open(path, "x", encoding="utf-8") as fh: fh.write(content)
+        break
+    except FileExistsError:
+        n += 1  # 编号被占：顺延，绝不覆盖已有信息源
 text = open(topic_path, encoding="utf-8").read()
 data, _ = parse(text)
 srcs = data.get("sources") or []

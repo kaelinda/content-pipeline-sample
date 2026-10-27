@@ -1,5 +1,7 @@
 # content-pipeline-sample
 
+> **新 Agent？先读 [`START_HERE.md`](START_HERE.md)，跑一遍 `python3 tools/doctor.py` 体检，再开工。** 环境依赖（必需只有 Python 3.9+ 与 git，零 pip 包）写在 `docs/environment.md`。
+
 一个最小可跑的多 Agent 内容生产样板仓。设计目标只有一个：**换任何平台、换任何 Agent，都不用迁数据。**
 
 ## 原理（四句话）
@@ -28,10 +30,10 @@ views/      Obsidian Bases 选题看板视图
 python3 tools/new_topic.py "你的选题标题"
 python3 tools/set_status.py topics/<生成的文件>.md researching --agent Muse
 python3 tools/set_status.py topics/<文件>.md drafting --agent claude-code
-python3 tools/register_asset.py --topic <topic_id> --type cover --file cover.svg --url https://example-bucket.cos.ap-shanghai.myqcloud.com/covers/demo.svg
+python3 tools/upload_asset.py --topic <topic_id> --type cover --file cover.svg   # 自动上传/暂存并登记，回填 assets（没配桶时走 staging）
 python3 tools/set_status.py topics/<文件>.md imaged
 python3 tools/set_status.py topics/<文件>.md video
-python3 tools/set_status.py topics/<文件>.md published --platform douyin --url https://example.com/published/1
+python3 tools/set_status.py topics/<文件>.md published --url https://example.com/published/1
 python3 tools/build_index.py
 python3 tools/validate.py
 cat index/board.md

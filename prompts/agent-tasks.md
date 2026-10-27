@@ -7,7 +7,7 @@
 > 认领 topics/<id>.md：先用 tools/set_status.py 把它推进到 researching 并在 research/ 写调研笔记（事实带来源），再推进 drafting，在 articles/ 写成稿，最后跑 build_index.py 和 validate.py 后提交。图片只登记对象存储 URL，不进 Git。
 
 ## 3. 生图（给任意生图 Agent）
-> 读 articles/<文章>.md，按文末配图要求生成封面图，上传到 <对象存储桶>，用 tools/register_asset.py 登记，再把选题推进到 imaged。
+> 读 articles/<文章>.md，按文末配图要求生成封面图，用 tools/upload_asset.py 上传并登记（没配桶自动走 staging），再把选题推进到 imaged。
 
 ## 4. 做视频（给 Muse / Lemo 流程）
 > 读 articles/<文章>.md，在 scripts/ 生成分镜脚本并成片，成片上传对象存储并登记，把选题依次推进 video → published（带发布链接）。

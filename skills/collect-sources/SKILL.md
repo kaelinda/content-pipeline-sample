@@ -4,7 +4,7 @@ description: 给选题搜集、登记信息源：一源一档、可靠性分级�
 ---
 ## 步骤
 1. 先看选题文件里已有的 sources，别重复采。
-2. 每发现一个新来源：`python3 tools/add_source.py --topic <id> --title .. --url .. --type official-doc|media|video|social|paper --publisher .. --by <你的名字> --reliability primary|secondary|social`
+2. 每发现一个新来源：`python3 tools/add_source.py --topic <id> --title .. --url .. --type web|official-doc|media|video|social|paper --publisher .. --by <你的名字> --reliability primary|secondary|social`
 3. 在生成的 sources/ 文件里补：快照要点（关键原文摘录）、与本选题的关系、与其它来源是否冲突。
 
 ## 分级

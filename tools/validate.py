@@ -35,6 +35,19 @@ for p in glob.glob(os.path.join(root,"topics/*.md")):
     for sid in (d.get("sources") or []):
         if sid not in src_ids: errors.append(f"{p}: sources 登记了不存在的信息源 {sid}")
         elif src_ids[sid].get("topic_id") != d.get("id"): errors.append(f"{p}: 信息源 {sid} 的 topic_id 对不上")
+import re as _re, fnmatch as _fn
+SECRET_PATTERNS=[_re.compile(r"AKIA[0-9A-Z]{16}"), _re.compile(r"ghp_[A-Za-z0-9]{30,}"), _re.compile(r"github_pat_[A-Za-z0-9_]{20,}"), _re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")]
+BAD_NAMES=(".env","*.pem","*.key","credentials*")
+for dirpath,_,files in os.walk(root):
+    if ".git" in dirpath or "assets-staging" in dirpath: continue
+    for fn in files:
+        fp=os.path.join(dirpath,fn); base=os.path.basename(fp)
+        if base!=".env.example" and any(_fn.fnmatch(base,p_) for p_ in BAD_NAMES): errors.append(f"{fp}: 疑似密钥文件不应进仓")
+        if base==".env" or (base.startswith(".env.") and base!=".env.example"): errors.append(f"{fp}: .env 文件不应进仓")
+        try: txt=open(fp,encoding="utf-8",errors="strict").read()
+        except Exception: continue
+        for pat in SECRET_PATTERNS:
+            if pat.search(txt): errors.append(f"{fp}: 命中密钥样式 {pat.pattern[:18]}...，立即移除并轮换该密钥")
 for dirpath,_,files in os.walk(root):
     if ".git" in dirpath or "assets-staging" in dirpath: continue
     for fn in files:

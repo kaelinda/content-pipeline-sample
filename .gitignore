@@ -5,3 +5,9 @@
 __pycache__/
 .env
 assets-staging/
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*
+.obsidian/

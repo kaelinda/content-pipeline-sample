@@ -16,7 +16,16 @@ if cmd=="check":
 elif cmd=="pull":
     run("git","pull","--rebase"); print("pulled")
 elif cmd=="push":
-    run(sys.executable,"tools/validate.py"); run(sys.executable,"tools/build_index.py")
-    run("git","push"); print("pushed")
+    st=run("git","status","--porcelain").stdout.strip()
+    if st:
+        print("拒绝推送：有未提交改动，先 git add + git commit 再 push。未提交文件：")
+        print(st); sys.exit(1)
+    run(sys.executable,"tools/validate.py")
+    r=run("git","push",check=False)
+    if r.returncode!=0:
+        print(r.stdout+r.stderr)
+        print("推送失败（见上）。若是首次推送且提示 no upstream，先执行：git push -u origin main")
+        sys.exit(r.returncode)
+    print("pushed")
 else:
     print("usage: sync.py check|pull|push"); sys.exit(2)
