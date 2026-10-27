@@ -1,0 +1,7 @@
+.DS_Store
+*.mp4
+*.mov
+*.zip
+__pycache__/
+.env
+assets-staging/

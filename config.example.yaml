@@ -1,0 +1,12 @@
+# 复制为 config.yaml 后填写（不含密钥，可进仓）；密钥只放 .env
+repo:
+  remote: ""            # 如 git@github.com:kaelinda/content-pipeline-sample.git
+oss:
+  provider: cos         # cos | r2 | s3 | minio，都是 S3 兼容
+  endpoint: ""          # 如 https://cos.ap-shanghai.myqcloud.com
+  bucket: ""
+  region: ap-shanghai
+  public_base: ""       # 对外访问域名，如 https://cdn.example.com
+mirrors:
+  feishu: false
+  notion: false

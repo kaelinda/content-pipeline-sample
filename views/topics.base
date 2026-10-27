@@ -1,0 +1,13 @@
+filters:
+  and:
+    - file.inFolder("topics")
+formulas:
+  is_published: 'status == "published"'
+views:
+  - type: table
+    name: 选题库
+    order: [file.name, status, type, platforms, owner_agent, updated]
+  - type: cards
+    name: 状态看板
+    groupBy: status
+    order: [file.name, type, owner_agent, updated]
