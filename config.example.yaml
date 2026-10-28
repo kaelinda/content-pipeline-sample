@@ -2,11 +2,11 @@
 repo:
   remote: ""            # 如 git@github.com:kaelinda/content-pipeline-sample.git
 oss:
-  provider: cos         # cos | r2 | s3 | minio，都是 S3 兼容
-  endpoint: ""          # 如 https://cos.ap-shanghai.myqcloud.com
-  bucket: ""
-  region: ap-shanghai
-  public_base: ""       # 对外访问域名，如 https://cdn.example.com
+  provider: r2          # 默认 r2（Cloudflare R2）；备选 cos | oss | s3 | minio，都是 S3 兼容
+  endpoint: ""          # R2 格式：https://<account_id>.r2.cloudflarestorage.com（<account_id> 换成你自己的，勿填真实密钥）
+  bucket: ""            # 如 content-assets（示例名，建桶时按你实际的桶名填）
+  region: auto          # R2 用 auto；换 COS/OSS 时改成对应区域，如 ap-shanghai / oss-cn-shanghai
+  public_base: ""       # R2 对外访问：优先自定义域名，如 https://assets.example.com；其次 R2 公开桶的 r2.dev 地址
 mirrors:
   feishu: false
   notion: false

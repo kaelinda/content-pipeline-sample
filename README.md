@@ -6,7 +6,7 @@
 
 ## 原理（四句话）
 1. 文字真源 = Git 里的 Markdown，一篇一个文件，状态写在文件头部的 YAML frontmatter 里。
-2. 图片/视频真源 = S3 兼容对象存储（腾讯 COS / Cloudflare R2 / MinIO 任选），仓里只登记 URL + sha256，不存大文件。
+2. 图片/视频真源 = S3 兼容对象存储，默认 Cloudflare R2（免出站流量费、全球 Agent 都容易访问；腾讯 COS / 阿里 OSS / MinIO 为备选），仓里只登记 URL + sha256，不存大文件。
 3. 索引、看板、选题库表格都是脚本从 Markdown 自动生成的，可随时重建、可丢弃。
 4. 飞书 / Notion / Obsidian / content-dashboard 都只是这批文件的不同“视图”，谁坏了都不丢数据。
 
@@ -44,14 +44,14 @@ cat index/board.md
 
 ## 技能层 skills/（每个 Agent 干活前先读对应的一篇）
 - `sync-repo` 同步与防冲突（认领即上锁、提交规范、没有 git 时用 GitHub API + sha 防覆盖）
-- `upload-oss` 上传对象存储（SigV4 直传 / 预签名 URL 两种，密钥只走环境变量，没配桶有 staging 模式）
+- `upload-oss` 上传对象存储（默认 R2，SigV4 直传，密钥只走环境变量，没配桶有 staging 模式；预签名 URL 与 HEAD 回读校验尚未实现，见该 skill）
 - `collect-sources` 采集信息源（一源一档、可靠性三级、事实结论的支撑标准）
 - `write-article` 写作与交接 / `make-media` 生图生视频 / `publish` 发布回填
 - `mirror-out` 单向镜像到飞书（HTTP API，不用 lark-cli）/ Notion（托管 MCP）
 - `backup-restore` 季度恢复演练（只用仓+桶重建，证明真能迁移）
 
 ## 配置层
-`config.example.yaml`（可进仓，不含密钥）+ `.env.example`（密钥模板，.env 永不进仓）。
+`config.example.yaml`（可进仓，不含密钥）+ `.env.example`（密钥模板，.env 永不进仓）。默认桶已定为 R2：按 `skills/upload-oss` 建桶、建桶级 Token、填 `.env` 后，`tools/upload_asset.py` 就能直传；没配好之前先走 staging，不卡流程。
 
 ## 给 Agent 的规矩
 见 `AGENTS.md`。任何 Agent（Muse / Grok Bot / WorkBuddy / Hermes / Claude Code / 豆包）只需会读写文件 + git，或会调 GitHub API，就能干活——不需要装 lark-cli、不需要任何平台专用 CLI。

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """把图片/视频上传到 S3 兼容对象存储并登记（纯标准库实现 SigV4）。
 未配置 OSS 环境变量时走 staging 模式：文件放 assets-staging/，manifest 记 pending。"""
-import argparse, os, sys, json, hashlib, datetime, shutil, urllib.request, hmac
+import argparse, os, sys, json, hashlib, datetime, shutil, urllib.request, hmac, mimetypes
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fm import parse, set_fields
@@ -17,7 +17,8 @@ def sign(key, msg):
 def sigv4_put(endpoint, bucket, key, data, ctype):
     ak = os.environ["OSS_ACCESS_KEY_ID"]
     sk = os.environ["OSS_ACCESS_KEY_SECRET"]
-    region = os.environ.get("OSS_REGION", "ap-shanghai")
+    # R2 的 SigV4 region 必须是 auto；未显式配置时按 endpoint 推断，COS/OSS 仍沿用 ap-shanghai 兜底
+    region = os.environ.get("OSS_REGION") or ("auto" if "r2.cloudflarestorage.com" in endpoint else "ap-shanghai")
     host = endpoint.replace("https://", "").replace("http://", "").rstrip("/")
     now = datetime.datetime.now(datetime.timezone.utc)
     amzdate = now.strftime("%Y%m%dT%H%M%SZ")
@@ -54,7 +55,8 @@ ext = os.path.splitext(a.file)[1].lower() or ".bin"
 key = "assets/" + a.topic + "/" + a.type + "-" + digest[:8] + ext
 configured = all(os.environ.get(k2) for k2 in ("OSS_ENDPOINT", "OSS_BUCKET", "OSS_ACCESS_KEY_ID", "OSS_ACCESS_KEY_SECRET"))
 if configured:
-    sigv4_put(os.environ["OSS_ENDPOINT"], os.environ["OSS_BUCKET"], key, data, "application/octet-stream")
+    ctype = mimetypes.guess_type(a.file)[0] or "application/octet-stream"
+    sigv4_put(os.environ["OSS_ENDPOINT"], os.environ["OSS_BUCKET"], key, data, ctype)
     base = os.environ.get("OSS_PUBLIC_BASE") or (os.environ["OSS_ENDPOINT"].rstrip("/") + "/" + os.environ["OSS_BUCKET"])
     url = base.rstrip("/") + "/" + key
     status = "uploaded"

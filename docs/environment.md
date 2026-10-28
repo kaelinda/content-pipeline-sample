@@ -13,7 +13,7 @@
 
 | 依赖 | 用途 | 缺失影响 | 配置方式 |
 |---|---|---|---|
-| OSS 凭据（OSS_ENDPOINT / OSS_BUCKET / OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET / OSS_REGION / OSS_PUBLIC_BASE） | 上传图片/视频到 S3 兼容桶 | 上传走 staging 暂存模式，事后补传 | 复制 `.env.example` 为 `.env` 填入（.env 永不进仓） |
+| OSS 凭据（OSS_ENDPOINT / OSS_BUCKET / OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET / OSS_REGION / OSS_PUBLIC_BASE） | 上传图片/视频到 S3 兼容桶，默认 Cloudflare R2（OSS_ENDPOINT 为 `https://<account_id>.r2.cloudflarestorage.com`，OSS_REGION 为 `auto`，Token 只给该桶权限） | 上传走 staging 暂存模式，事后补传 | 复制 `.env.example` 为 `.env` 填入（.env 永不进仓） |
 | GitHub token / 已授权的 GitHub App | API 模式 Agent 读写仓 | 只能本地模式干活 | 由平台侧授权，不写进仓 |
 | 飞书 app_id/secret、Notion token | 镜像同步到飞书/Notion | 镜像功能不可用，真源不受影响 | 同上，放 `.env` |
 | Obsidian | 人类本地打开仓看板/编辑 | Agent 不需要；人可用任何 Markdown 编辑器替代 | 打开仓根目录即是一个 vault |
